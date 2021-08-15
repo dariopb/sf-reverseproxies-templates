@@ -14,6 +14,6 @@ sfctl application delete --application-id pinger --force-remove FORCE_REMOVE
 sfctl application unprovision --application-type-name PingerApplicationType --application-type-version 1.0
 
 sfctl application upload --path ./pinger-traefik #--show-progress
-sfctl application provision --application-type-build-path pinger.windows-traefik
+sfctl application provision --application-type-build-path pinger-traefik
 sfctl application create --app-name fabric:/pinger --app-type PingerApplicationType --app-version 1.0
 
