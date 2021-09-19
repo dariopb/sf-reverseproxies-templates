@@ -8,18 +8,20 @@ Before deploying the templates, please replace the Pilot token with your token i
 pilot:
     token: "add-your-own-traefik-pilot-token"
 experimental:
-    plugins:
-        traefikServiceFabricPlugin:
+    localPlugins:
+    #plugins:
+        sf:
             moduleName: "github.com/dariopb/traefikServiceFabricPlugin"
-            version: "v0.2.1"
-
-providers:
+            #version: "v0.3.0"
+...
   plugin:
-    traefikServiceFabricPlugin:
+    sf:
       pollInterval: 4s
-      clusterManagementURL: http://dariotraefik1.southcentralus.cloudapp.azure.com:19080/
+      clusterManagementURL: http://localhost:19080
+      httpEntrypoint: web
       #certificate : ./cert.pem
       #certificateKey: ./cert.key
+      #insecureSkipVerify: true
 ```
 
 Also, for secure clusters, a good certificate able to access SF at least RO should be added in the service Code location.

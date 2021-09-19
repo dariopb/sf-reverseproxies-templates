@@ -1,6 +1,8 @@
 entryPoints:
   web:
     address: :9999
+  tcp1:
+    address: :9998
     
 api:
   dashboard: true
@@ -12,18 +14,22 @@ log:
 pilot:
     token: "add-your-own-traefik-pilot-token"
 experimental:
-    plugins:
-        traefikServiceFabricPlugin:
+    localPlugins:
+    #plugins:
+        sf:
             moduleName: "github.com/dariopb/traefikServiceFabricPlugin"
-            version: "v0.2.1"
+            #version: "v0.3.0"
 
 providers:
   file:
     filename: "dyn.yaml"
 
   plugin:
-    traefikServiceFabricPlugin:
+    sf:
       pollInterval: 4s
       clusterManagementURL: http://localhost:19080
+      #clusterManagementURL: http://darioclus1.southcentralus.cloudapp.azure.com:19080
+      httpEntrypoint: web
       #certificate : ./cert.pem
       #certificateKey: ./cert.key
+      #insecureSkipVerify: true

@@ -10,10 +10,10 @@ sfctl application create --app-name fabric:/traefik --app-type TraefikType --app
 
 
 # Sample pinger app for validating (navidate to /pinger/PingerService/id)
-sfctl application delete --application-id pinger --force-remove FORCE_REMOVE
+sfctl application delete --application-id pinger7000 --force-remove FORCE_REMOVE
 sfctl application unprovision --application-type-name PingerApplicationType --application-type-version 1.0
 
 sfctl application upload --path ./pinger-traefik #--show-progress
 sfctl application provision --application-type-build-path pinger-traefik
-sfctl application create --app-name fabric:/pinger --app-type PingerApplicationType --app-version 1.0
+sfctl application create --app-name fabric:/pinger7000 --app-type PingerApplicationType --app-version 1.0 #--parameters '{"Pinger_Port"="7000"}'
 
