@@ -1,23 +1,29 @@
 {
   "http": {
     "routers": {
-      "fabric-TestApplication-TestService-ep1": {
+      "fabric-TestApplication-TestService-http-ep1": {
+        "entryPoints": [
+          "web"
+        ],
         "middlewares": [
           "sf-stripprefixregex_nonpartitioned"
         ],
-        "service": "fabric-TestApplication-TestService-ep1",
+        "service": "fabric-TestApplication-TestService-http-ep1",
         "rule": "PathPrefix(`/TestApplication/TestService`)"
       },
-      "fabric-TestApplication-TestService-ep1-bce46a8c-b62d-4996-89dc-7ffc00a96902": {
+      "fabric-TestApplication-TestService-http-ep1-bce46a8c-b62d-4996-89dc-7ffc00a96902": {
+        "entryPoints": [
+          "web"
+        ],
         "middlewares": [
           "sf-stripprefixregex_nonpartitioned"
         ],
-        "service": "fabric-TestApplication-TestService-ep1-bce46a8c-b62d-4996-89dc-7ffc00a96902",
+        "service": "fabric-TestApplication-TestService-http-ep1-bce46a8c-b62d-4996-89dc-7ffc00a96902",
         "rule": "PathPrefix(`/TestApplication/TestService`) \u0026\u0026 Query(`PartitionID=bce46a8c-b62d-4996-89dc-7ffc00a96902`)"
       }
     },
     "services": {
-      "fabric-TestApplication-TestService-ep1": {
+      "fabric-TestApplication-TestService-http-ep1": {
         "loadBalancer": {
           "servers": [
             {
@@ -34,7 +40,7 @@
           "passHostHeader": null
         }
       },
-      "fabric-TestApplication-TestService-ep1-bce46a8c-b62d-4996-89dc-7ffc00a96902": {
+      "fabric-TestApplication-TestService-http-ep1-bce46a8c-b62d-4996-89dc-7ffc00a96902": {
         "loadBalancer": {
           "servers": [
             {

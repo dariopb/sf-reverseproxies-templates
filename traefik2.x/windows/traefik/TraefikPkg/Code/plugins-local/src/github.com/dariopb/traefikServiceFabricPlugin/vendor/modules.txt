@@ -8,3 +8,7 @@ github.com/jjcollinge/servicefabric
 github.com/traefik/genconf/dynamic
 github.com/traefik/genconf/dynamic/tls
 github.com/traefik/genconf/dynamic/types
+# github.com/traefik/paerser v0.1.4
+## explicit
+github.com/traefik/paerser/parser
+github.com/traefik/paerser/types

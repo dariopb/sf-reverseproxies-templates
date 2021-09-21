@@ -20,9 +20,7 @@ import (
 
 const (
 	traefikServiceFabricExtensionKey     = "Traefik"
-	traefikSFEnableService               = "traefik.http.enable"
-	traefikSFRule                        = "traefik.http.rule"
-	traefikSFEnableLabelOverrides        = "Traefik.enablelabeloverrides"
+	traefikSFEnableLabelOverrides        = "Traefik.enableLabelOverrides"
 	traefikSFEnableLabelOverridesDefault = true
 
 	kindStateful  = "Stateful"

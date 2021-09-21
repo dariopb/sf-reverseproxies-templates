@@ -34,7 +34,8 @@ func TestNew(t *testing.T) {
 	config.InsecureSkipVerify = false
 	//config.ClusterManagementURL = "https://darioclus90.southcentralus.cloudapp.azure.com:19080"
 	config.ClusterManagementURL = "http://darioclus1.southcentralus.cloudapp.azure.com:19080"
-	//config.ClusterManagementURL = server.URL
+	config.ClusterManagementURL = "http://localhost:19080"
+	config.ClusterManagementURL = server.URL
 
 	config.Certificate = ""    //"C:/projects/sf_stuff/traefik/darioclient.crt.pem"
 	config.CertificateKey = "" //"C:/projects/sf_stuff/traefik/darioclient.key.pem"
