@@ -6,7 +6,18 @@ Unregister-ServiceFabricApplicationType -ApplicationTypeName TraefikType -Applic
 
 Copy-ServiceFabricApplicationPackage -ApplicationPackagePath .\traefik\ # -ApplicationPackagePathInImageStore traefik
 Register-ServiceFabricApplicationType -ApplicationPathInImageStore traefik
-New-ServiceFabricApplication -ApplicationName fabric:/traefik -ApplicationTypeName TraefikType -ApplicationTypeVersion 1.0.0
+$p = @{
+    ReverseProxy_FetcherEndpoint="7777"
+    ReverseProxy_HttpPort="9999"
+    ReverseProxy_CertificateSearchKeyword=""
+    ClusterEndpoint="https://localhost:19080"
+    CertStoreSearchKey="sfmc"
+    ClientCertificate=""
+    ClientCertificatePK=""
+    #ReverseProxy_PlacementConstraints="NodeType == NT2"
+}
+$p
+New-ServiceFabricApplication -ApplicationName fabric:/traefik -ApplicationTypeName TraefikType -ApplicationTypeVersion 1.0.0 -ApplicationParameter $p
 
 
 # Sample pinger app for validating (navidate to /pinger7000/PingerService/id)
@@ -18,6 +29,11 @@ Unregister-ServiceFabricApplicationType -ApplicationTypeName PingerApplicationTy
 Copy-ServiceFabricApplicationPackage -ApplicationPackagePath .\pinger-traefik\ #-ApplicationPackagePathInImageStore pinger
 Register-ServiceFabricApplicationType -ApplicationPathInImageStore pinger-traefik
 
+$pp = @{
+    "Pinger_Instance_Count"="-1"
+    #"Pinger_PlacementConstraints"= "NodeType == NT2"
+}
 for ($i=7000; $i -le 7003; $i++) {
-    New-ServiceFabricApplication -ApplicationName fabric:/pinger$i -ApplicationTypeName PingerApplicationType -ApplicationTypeVersion 1.0 -ApplicationParameter @{Pinger_Port="$i"}
+    $p = $pp + @{Pinger_Port="$i"}
+    New-ServiceFabricApplication -ApplicationName fabric:/pinger$i -ApplicationTypeName PingerApplicationType -ApplicationTypeVersion 1.0 -ApplicationParameter $p
 }

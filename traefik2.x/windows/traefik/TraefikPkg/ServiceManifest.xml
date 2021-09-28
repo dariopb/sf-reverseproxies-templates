@@ -1,37 +1,55 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ServiceManifest Name="TraefikPkg" Version="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <ServiceTypes>
-    <!-- This is the name of your ServiceType. 
-         The UseImplicitHost attribute indicates this is a guest executable service. -->
     <StatelessServiceType ServiceTypeName="TraefikType" UseImplicitHost="true" />
   </ServiceTypes>
-  <!-- Code package is your service executable. -->
+  <!-- Treefik -->
   <CodePackage Name="Code" Version="1.0.0">
-    <!-- The SetupEntryPoint is an optional element used to specify a
-         program to be executed before the service's code is launched. -->
+<!--
+    <SetupEntryPoint>
+      <ExeHost>
+        <Program>setup_traefik.bat</Program>
+      </ExeHost>
+    </SetupEntryPoint>
+-->
     <EntryPoint>
       <ExeHost>
-        <Program>traefik.exe</Program>
-        <Arguments>--configfile=traefik.yaml</Arguments>
+        <Program>startproxy.bat</Program>
+        <Arguments>&lt; nul</Arguments>
         <WorkingFolder>CodePackage</WorkingFolder>
-        <!-- Uncomment to log console output (both stdout and stderr) to one of the
-             service's working directories. -->
         <ConsoleRedirection FileRetentionCount="5" FileMaxSizeInKb="2048" />
       </ExeHost>
     </EntryPoint>
+    <EnvironmentVariables>
+      <EnvironmentVariable Name="TRAEFIK_HTTP_PORT" Value="9999" />
+      <EnvironmentVariable Name="TRAEFIK_CERTIFICATE_NATIVE_STORE_SEARCH_KEYWORD" Value="" />
+    </EnvironmentVariables>
   </CodePackage>
-  <!-- Config package is the contents of the Config directoy under PackageRoot that contains an 
-       independently-updateable and versioned set of custom configuration settings for your service. -->
-  <!-- WARNING *************************** WARNING
-        ConfigPackage Name must stay as "Config"
-       WARNING *************************** WARNING -->
+
+  <!-- Fetcher -->
+  <CodePackage Name="Fetcher.Code" Version="1.0.0">
+    <EntryPoint>
+      <ExeHost IsExternalExecutable="false">
+        <Program>server.exe</Program>
+        <Arguments>run -i</Arguments>
+        <ConsoleRedirection FileRetentionCount="5" FileMaxSizeInKb="2048"/>
+      </ExeHost>
+    </EntryPoint>
+    <EnvironmentVariables>
+      <EnvironmentVariable Name="HTTP_PORT" Value="7777" />
+      <EnvironmentVariable Name="CLUSTER_ENDPOINT" Value="http://localhost:19080" />
+      <EnvironmentVariable Name="CLIENT_CERT" Value="" />
+      <EnvironmentVariable Name="CLIENT_CERT_PK" Value="" />
+      <EnvironmentVariable Name="CLUSTER_CERT_SEARCH_KEY" Value="" />
+      <EnvironmentVariable Name="PUBLISH_FILE_PATH" Value="..\work\sf_discovered.yaml" />
+    </EnvironmentVariables>
+  </CodePackage>
+
   <ConfigPackage Name="Config" Version="1.0.0" />
   <Resources>
     <Endpoints>
-      <!-- This endpoint is used by the communication listener to obtain the port on which to 
-           listen. Please note that if your service is partitioned, this port is shared with 
-           replicas of different partitions that are placed in your code. -->
-      <Endpoint Name="TraefikTypeEndpoint" UriScheme="http" Port="9999" />
+      <Endpoint Name="ReverseProxyEndpoint0" UriScheme="http" CodePackageRef="Code" />
+      <Endpoint Name="FetcherEndpoint" UriScheme="http" CodePackageRef="Fetcher.Code"/>
     </Endpoints>
   </Resources>
 </ServiceManifest>

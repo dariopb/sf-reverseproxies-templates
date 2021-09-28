@@ -12,6 +12,7 @@
             <Label Key="traefik.http.PingerEndpoint0">true</Label>
             <!--<Label Key="traefik.http.PingerEndpoint0.router.rule">PathPrefix(`/dario`)</Label> -->
             <!--<Label Key="traefik.http.PingerEndpoint0.middlewares.1.stripPrefix.prefixes">/dario</Label> -->
+            <Label Key="traefik.http.PingerEndpoint0.router.tls.options">true</Label>
             <Label Key="traefik.http.PingerEndpoint0.service.loadbalancer.healthcheck.path">/</Label>
             <Label Key="traefik.http.PingerEndpoint0.service.loadbalancer.healthcheck.interval">10s</Label>
             <Label Key="traefik.http.PingerEndpoint0.service.loadbalancer.healthcheck.scheme">http</Label>
