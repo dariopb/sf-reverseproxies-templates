@@ -14,6 +14,7 @@ $p = @{
     CertStoreSearchKey="sfmc"
     ClientCertificate=""
     ClientCertificatePK=""
+    ReverseProxy_EnableDashboard="true"
     #ReverseProxy_PlacementConstraints="NodeType == NT2"
 }
 $p
@@ -21,7 +22,7 @@ New-ServiceFabricApplication -ApplicationName fabric:/traefik -ApplicationTypeNa
 
 
 # Sample pinger app for validating (navidate to /pinger7000/PingerService/id)
-for ($i=7000; $i -le 7003; $i++) {
+for ($i=7000; $i -le 7000; $i++) {
     Remove-ServiceFabricApplication -ApplicationName fabric:/pinger$i -Force
 }
 Unregister-ServiceFabricApplicationType -ApplicationTypeName PingerApplicationType -ApplicationTypeVersion 1.0 -Force
@@ -32,8 +33,9 @@ Register-ServiceFabricApplicationType -ApplicationPathInImageStore pinger-traefi
 $pp = @{
     "Pinger_Instance_Count"="-1"
     #"Pinger_PlacementConstraints"= "NodeType == NT2"
+    #"Pinger_Port"="7000"
 }
-for ($i=7000; $i -le 7003; $i++) {
+for ($i=7000; $i -le 7000; $i++) {
     $p = $pp + @{Pinger_Port="$i"}
     New-ServiceFabricApplication -ApplicationName fabric:/pinger$i -ApplicationTypeName PingerApplicationType -ApplicationTypeVersion 1.0 -ApplicationParameter $p
 }

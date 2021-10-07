@@ -5,17 +5,18 @@
   </ServiceTypes>
   <!-- Treefik -->
   <CodePackage Name="Code" Version="1.0.0">
-<!--
     <SetupEntryPoint>
-      <ExeHost>
-        <Program>setup_traefik.bat</Program>
+      <ExeHost IsExternalExecutable="true">
+        <Program>powershell.exe</Program>
+        <Arguments>-executionpolicy bypass -file "setup.ps1"</Arguments>
+        <WorkingFolder>CodePackage</WorkingFolder>
+        <ConsoleRedirection FileRetentionCount="1" FileMaxSizeInKb="1024"/>
       </ExeHost>
     </SetupEntryPoint>
--->
     <EntryPoint>
       <ExeHost>
-        <Program>startproxy.bat</Program>
-        <Arguments>&lt; nul</Arguments>
+        <Program>traefik.exe</Program>
+        <Arguments>--configFile=..\traefik.yaml</Arguments>
         <WorkingFolder>CodePackage</WorkingFolder>
         <ConsoleRedirection FileRetentionCount="5" FileMaxSizeInKb="2048" />
       </ExeHost>
@@ -23,6 +24,7 @@
     <EnvironmentVariables>
       <EnvironmentVariable Name="TRAEFIK_HTTP_PORT" Value="9999" />
       <EnvironmentVariable Name="TRAEFIK_CERTIFICATE_NATIVE_STORE_SEARCH_KEYWORD" Value="" />
+      <EnvironmentVariable Name="TRAEFIK_ENABLE_DASHBOARD" Value="false" />
     </EnvironmentVariables>
   </CodePackage>
 
