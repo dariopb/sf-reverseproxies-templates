@@ -2,13 +2,13 @@ Connect-ServiceFabricCluster
 
 # Register and run the Traefik Application
 Remove-ServiceFabricApplication -ApplicationName fabric:/traefik -Force
-Unregister-ServiceFabricApplicationType -ApplicationTypeName TraefikType -ApplicationTypeVersion 1.0.0 -Force
+Unregister-ServiceFabricApplicationType -ApplicationTypeName TraefikType -ApplicationTypeVersion 0.1.0-beta -Force
 
 Copy-ServiceFabricApplicationPackage -ApplicationPackagePath .\traefik\ # -ApplicationPackagePathInImageStore traefik
 Register-ServiceFabricApplicationType -ApplicationPathInImageStore traefik
 $p = @{
     ReverseProxy_FetcherEndpoint="7777"
-    ReverseProxy_HttpPort="9999"
+    ReverseProxy_HttpPort="8080"
     ReverseProxy_CertificateSearchKeyword=""
     ClusterEndpoint="https://localhost:19080"
     CertStoreSearchKey="sfmc"
@@ -18,7 +18,7 @@ $p = @{
     #ReverseProxy_PlacementConstraints="NodeType == NT2"
 }
 $p
-New-ServiceFabricApplication -ApplicationName fabric:/traefik -ApplicationTypeName TraefikType -ApplicationTypeVersion 1.0.0 -ApplicationParameter $p
+New-ServiceFabricApplication -ApplicationName fabric:/traefik -ApplicationTypeName TraefikType -ApplicationTypeVersion 0.1.0-beta -ApplicationParameter $p
 
 
 # Sample pinger app for validating (navidate to /pinger7000/PingerService/id)

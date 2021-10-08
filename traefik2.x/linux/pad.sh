@@ -2,11 +2,11 @@
 sfctl cluster select --endpoint http://localhost:19080 #--pem /var/lib/sfcerts/cert.pem --no-verify
 
 sfctl application delete --application-id traefik --force-remove FORCE_REMOVE
-sfctl application unprovision --application-type-name TraefikType --application-type-version 1.0.0
+sfctl application unprovision --application-type-name TraefikType --application-type-version 0.1.0-beta
 
 sfctl application upload --path ./traefik #--show-progress
 sfctl application provision --application-type-build-path traefik
-sfctl application create --app-name fabric:/traefik --app-type TraefikType --app-version 1.0.0
+sfctl application create --app-name fabric:/traefik --app-type TraefikType --app-version 0.1.0-beta
 
 
 # Sample pinger app for validating (navidate to /pinger/PingerService/id)

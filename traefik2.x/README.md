@@ -42,7 +42,7 @@ If you need to change the routes or add middleware then you can add different la
 
 Rule section
 
-* **traefik.http.[endpointName].rule**    Traefik rule to apply [PathPrefix(`/dario`))]. This rule is added on top of the default path generation. If this is set, you **have** to define a middleware to remove the prefix for the service to receive the stripped path.
+* **traefik.http.[endpointName].rule**    Traefik rule to apply [PathPrefix(`/pinger`))]. This rule is added on top of the default path generation. If this is set, you **have** to define a middleware to remove the prefix for the service to receive the stripped path.
 
 *Loadbalancer section*
 
@@ -53,4 +53,4 @@ Rule section
 
 *Middleware section*
 
-* **traefik.http.[endpointName].middleware.stripprefix**    prefix to strip ['/dario']
+* **traefik.http.[endpointName].middleware.stripprefix**    prefix to strip ['/pinger']
