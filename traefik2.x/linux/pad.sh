@@ -6,7 +6,21 @@ sfctl application unprovision --application-type-name TraefikType --application-
 
 sfctl application upload --path ./traefik #--show-progress
 sfctl application provision --application-type-build-path traefik
-sfctl application create --app-name fabric:/traefik --app-type TraefikType --app-version 0.1.0-beta
+
+p='{
+    "ReverseProxy_InstanceCount":"1",
+    "ReverseProxy_FetcherEndpoint":"7777",
+    "ReverseProxy_HttpPort":"8080",
+    "ReverseProxy_CertificateSearchKeyword":"",
+    "ClusterEndpoint":"https://localhost:19080",
+    "ClientCertificate":"/var/lib/sfcerts/64E6BDA1F105807DF290F69C52D3D3A93D2449E2.pem",
+    "ClientCertificatePK":"/var/lib/sfcerts/64E6BDA1F105807DF290F69C52D3D3A93D2449E2.prv",
+    "ReverseProxy_EnableDashboard":"true"
+}'
+    #"ReverseProxy_PlacementConstraints":"NodeType == NT2"
+
+
+sfctl application create --app-name fabric:/traefik --app-type TraefikType --app-version 0.1.0-beta --parameters "$p"
 
 
 # Sample pinger app for validating (navidate to /pinger/PingerService/id)
@@ -15,12 +29,12 @@ sfctl application unprovision --application-type-name PingerApplicationType --ap
 
 sfctl application upload --path ./pinger-traefik #--show-progress
 sfctl application provision --application-type-build-path pinger-traefik
-sfctl application create --app-name fabric:/pinger7000 --app-type PingerApplicationType --app-version 1.0 #--parameters '{"Pinger_Port"="7000"}'
+sfctl application create --app-name fabric:/pinger7000 --app-type PingerApplicationType --app-version 1.0 --parameters '{"Pinger_Port":"7000"}'
 
-
+##### How to find a working client certificate locally 
 # Go to SF app dir
 # /mnt/sfroot 
-more FabricHostSettings.xml | grep Cert|grep Clus
+more /mnt/sfroot/FabricHostSettings.xml | grep Cert|grep Clus
     <Parameter Name="ClusterCertificateAclingInterval" Value="86400" />
     <Parameter Name="ClusterCertThumbprints" Value="CB93FC5CAAB491B83570089F54F0CDDF872C9B82,5197317B5263E5ED8790053B1EFF34C0456F2B4F" />
 

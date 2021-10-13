@@ -1,5 +1,6 @@
 #!/bin/bash
 
+echo "Starting" > log.txt
 set -e
 
 #export TRAEFIK_HTTP_PORT=9999
@@ -13,7 +14,7 @@ vars=(TRAEFIK_HTTP_PORT TRAEFIK_ENABLE_DASHBOARD Fabric_Folder_App_Work)
 for i in "${vars[@]}"; do sed -i 's#'\<$i\>'#'"${!i}"'#g' ../traefik.yaml; done
 
 echo "Traefik config file:"
-more ../traefik.yaml
+more ../traefik.yaml >> log.txt
 
 cp dynConfig/dyn.yaml $Fabric_Folder_App_Work/dyn.yaml
 
