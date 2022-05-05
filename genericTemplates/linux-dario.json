@@ -1,0 +1,249 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().location]"
+        },
+
+        "vmName": {
+            "type": "string"
+        },
+        "adminUsername": {
+            "type": "string",
+            "defaultValue": "dario"
+        },
+        "adminPassword": {
+            "type": "secureString"
+        },
+        "adminPubKey" : {
+            "type": "secureString",
+            "defaultValue": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC65IosnKijcM4q+4DN6w8fHyjBqzwR48cG+/SrZ8YCOh2uDOFnQThhX3ahmSHqB58QgiQ6ECowimVKTJffv3Fnkt3C9LfTNlaTDSYJp3X3mtzpnVDLfdLBMH1AW5bH2AFdNNRoFxWxfG4OZJ5AlE/r3sn4//66VMAgcGeezVGI8WzNadeYdpKWfiYkUa/QuXvU+OBrcWeDzaYg+E7MJoqkhhpPvjHHn6o8Mo6oda4PGlyKpbK00GgueRrkzDW1yknczqGYSndVorQgSp8MdHovKf4MGYxuS0/o/8t9vgnuPPqs4OMKZO7teTFDlEncD9OKzvfpUawSl4+rhvVfvnjSpRseCIo1ql51bwVR79DUQB5SLbnbz30w1JgAkepTGAY0bKE7SGEmMl9psVTvZzW8Ww8/2jRkWgJKGOppyNLAKTsccW7dxTAiQKzu/+KdwDmC7wn/cNDNOPneYpWtw5IkLC4IdpM4/WcWvfHxXe9iBGwXSWMsHl3SFKN8x0JkBEI8qVtUnhnttW3yt2pxzyY3nEuhRyfxd/ti0WpnVGmZGm/9DuXf3sJ+1t4Zk7J9qAhv4O5q9DP+DY/gPkDQgGm08AeqET0YZLInbki/vqb1TV5JSMSaPG7p3LiWMG57tB2S4UHMCQSZh8Z7ibroveJoQtNr7ACqpqWV0L6B6Lzr/Q== dario"
+        },
+        "authenticationType" : {
+            "type": "string",
+            "defaultValue": "pubkey"
+        },
+        "osDiskType": {
+            "type": "string",
+            "defaultValue": "Premium_LRS"
+        },
+        "virtualMachineSize": {
+            "type": "string",
+            "defaultValue": "Standard_D2s_v3"
+        },
+
+        "vnetResourceGroupName": {
+                "type": "string",
+                "defaultValue": "dariovnet1rg"
+            },
+        "vnetName": {
+            "type": "string",
+            "defaultValue": "dariovnet1"
+        },
+        "subnetName": {
+            "type": "string",
+            "defaultValue": "sub1"
+        },
+        "publicIpAddressType": {
+            "type": "string",
+            "defaultValue": "Dynamic"
+        },
+        "publicIpAddressSku": {
+            "type": "string",
+            "defaultValue": "Basic"
+        },
+        "diagnosticsStorageAccountName": {
+            "type": "string",
+            "defaultValue": "dariovnettest1diag"
+        },
+        "diagnosticsStorageAccountId": {
+            "type": "string",
+            "defaultValue": "Microsoft.Storage/storageAccounts/dariovnettest1diag"
+        },
+        "diagnosticsStorageAccountType": {
+            "type": "string",
+            "defaultValue": "Standard_LRS"
+        },
+        "diagnosticsStorageAccountKind": {
+            "type": "string",
+            "defaultValue": "Storage"
+        }
+    },
+    "variables": {
+        "vnetId": "[resourceId(parameters('vnetResourceGroupName'), 'Microsoft.Network/virtualNetworks',parameters('vnetName'))]",
+        "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('subnetName'))]",
+        "networkInterfaceName" : "[concat(parameters('vmName'), '-nic1')]",
+        "publicIpAddressName": "[concat(parameters('vmName'), '-ip1')]",
+        "linuxConfiguration": {
+            "disablePasswordAuthentication": false,
+            "ssh": {
+              "publicKeys": [
+                {
+                  "path": "[format('/home/{0}/.ssh/authorized_keys', parameters('adminUsername'))]",
+                  "keyData": "[parameters('adminPubKey')]"
+                }
+              ]
+            }
+          }
+    },
+    "resources": [
+        {
+            "name": "[variables('networkInterfaceName')]",
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "2019-07-01",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/publicIpAddresses/', variables('publicIpAddressName'))]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            },
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIpAddress": {
+                                "id": "[resourceId(resourceGroup().name, 'Microsoft.Network/publicIpAddresses', variables('publicIpAddressName'))]"
+                            },
+                            "primary": true
+                        }
+                    }
+                    ,{
+                        "name": "ipconfig2",
+                        "properties": {
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            },
+                            "privateIPAllocationMethod": "Dynamic"
+                        }
+                    }
+                    ,{
+                        "name": "ipconfig3",
+                        "properties": {
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            },
+                            "privateIPAllocationMethod": "Dynamic"
+                        }
+                    }
+                    ,{
+                        "name": "ipconfig4",
+                        "properties": {
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            },
+                            "privateIPAllocationMethod": "Dynamic"
+                        }
+                    }
+                    ,{
+                        "name": "ipconfig5",
+                        "properties": {
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            },
+                            "privateIPAllocationMethod": "Dynamic"
+                        }
+                    }
+                    ,{
+                        "name": "ipconfig6",
+                        "properties": {
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            },
+                            "privateIPAllocationMethod": "Dynamic"
+                        }
+                    }
+                    ,{
+                        "name": "ipconfig7",
+                        "properties": {
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            },
+                            "privateIPAllocationMethod": "Dynamic"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "[variables('publicIpAddressName')]",
+            "type": "Microsoft.Network/publicIpAddresses",
+            "apiVersion": "2019-02-01",
+            "location": "[parameters('location')]",
+            "properties": {
+                "publicIpAllocationMethod": "[parameters('publicIpAddressType')]"
+            },
+            "sku": {
+                "name": "[parameters('publicIpAddressSku')]"
+            }
+        },
+        {
+            "name": "[parameters('vmName')]",
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "2019-07-01",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkInterfaces/', variables('networkInterfaceName'))]"
+            ],
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "[parameters('virtualMachineSize')]"
+                },
+                "storageProfile": {
+                    "osDisk": {
+                        "createOption": "fromImage",
+                        "managedDisk": {
+                            "storageAccountType": "[parameters('osDiskType')]"
+                        }
+                    },
+                    "imageReference": {
+                        "publisher": "canonical",
+                        "offer": "0001-com-ubuntu-server-focal",
+                        "sku": "20_04-lts",
+                        "version": "latest"
+                    }
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaceName'))]"
+                        }
+                    ]
+                },
+                "osProfile": {
+                    "computerName": "[parameters('vmName')]",
+                    "adminUsername": "[parameters('adminUsername')]",
+                    "adminPassword": "[parameters('adminPassword')]",
+                    "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), null(), variables('linuxConfiguration'))]"
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true,
+                        "storageUri": "[concat('https://', parameters('diagnosticsStorageAccountName'), '.blob.core.windows.net/')]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "[parameters('diagnosticsStorageAccountName')]",
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2019-06-01",
+            "location": "[parameters('location')]",
+            "properties": {},
+            "kind": "[parameters('diagnosticsStorageAccountKind')]",
+            "sku": {
+                "name": "[parameters('diagnosticsStorageAccountType')]"
+            }
+        }
+    ],
+    "outputs": {
+        "adminUsername": {
+            "type": "string",
+            "value": "[parameters('adminUsername')]"
+        }
+    }
+}
